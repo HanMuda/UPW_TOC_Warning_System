@@ -1,0 +1,54 @@
+# 数据文件
+*.h5
+*.hdf5
+*.npy
+*.npz
+*.pkl
+*.pickle
+
+# 日志和检查点
+logs/
+*.log
+# 数据文件
+*.h5
+*.hdf5
+*.npy
+*.npz
+*.pkl
+*.pickle
+
+# 日志和检查点
+logs/
+*.log
+checkpoints/
+*.ckpt
+
+# 环境相关
+env/
+venv/
+*.env
+
+# IDE相关
+.vscode/
+.idea/
+
+# 其他
+.DS_Store
+__pycache__/
+*.py[cod]checkpoints/
+*.ckpt
+
+# 环境相关
+env/
+venv/
+*.env
+
+# IDE相关
+.vscode/
+.idea/
+
+# 其他
+.DS_Store
+__pycache__/
+*.py[cod]
+
