@@ -1,0 +1,106 @@
+# ===================================================================
+#  运行配置
+# ===================================================================
+run_config:
+  # 调优开关 Optuna
+  perform_tuning: false
+  # 运行模型： 'lstm', 'tcn', 'tcn_lstm_attention'
+  model_name: 'lstm' 
+  
+  # --- 数据与预处理 ---
+  data_path: 'data/processed/TOC_dataset.csv' 
+  output_feature: 'UPW'
+  base_features: ['WW', 'RW', 'DI', 'RO', 'MD']
+  final_model_inputs: 
+    # --- 原始特征 ---
+    - 'WW'
+    - 'RW'
+    - 'DI'
+    - 'RO'
+    - 'MD'
+    
+    # --- 时间特征 ---
+    - 'hour_sin'
+    - 'hour_cos'
+    
+    # --- 差值特征 ---
+    - 'WW_minus_UPW'
+    - 'RW_minus_UPW'
+    - 'DI_minus_UPW'
+    - 'RO_minus_UPW'
+    - 'MD_minus_UPW'
+    
+    # --- 变化率特征 ---
+    - 'WW_rate_of_change'
+    - 'RW_rate_of_change'
+    - 'DI_rate_of_change'
+    - 'RO_rate_of_change'
+    - 'MD_rate_of_change'
+  
+  # HRT字典的键应该与 base_features 对应
+  HRT_values:
+    WW: 63
+    RW: 10.5
+    DI: 5.5
+    RO: 3.5
+    MD: 1.5
+  sequence_length: 24
+  forecast_horizon: 1
+  train_ratio: 0.7  # 70% 训练
+  val_ratio: 0.15   # 15% 验证, 15% 测试
+  scaler_type: 'Standard' #  'Standard', 'MinMax'
+  augmentation_noise_level: 0.02 # 数据增强时添加的噪声大小
+  
+  # --- 训练参数 ---
+  device: 'cuda' #  'cpu'
+  num_epochs: 100
+  early_stopping_patience: 20
+  
+  # --- 预警阈值 ---
+  warning_threshold: 0.65
+  
+  # --- Optuna 调优参数 ---
+  n_trials: 50      # Optuna 试验次数
+  timeout: 7200     # Optuna 运行时间上限 (秒)
+  optuna_epochs: 30 # Optuna 调优时，每个 trial 训练的 epoch 数
+  
+  # --- 路径设置 ---
+  model_save_path: 'outputs/checkpoints/best_model_{model_name}.pth'
+  results_csv_name: 'predictions.csv'
+  results_dir: 'outputs/results'
+  
+# ===================================================================
+#  模型参数库
+# ===================================================================
+model_params:
+  # -------------------------
+  # 模型1: lstm
+  # -------------------------
+  lstm:
+    hidden_size: 256
+    num_layers: 1
+    dropout: 0.31269557557385824
+    output_size: 1
+    batch_size: 32
+    learning_rate: 0.004643019067007569
+    weight_decay: 0.0002870998475099406
+    loss_weight_factor: 2.37293149364333
+
+  # -------------------------
+  # 模型2: tcn
+  # -------------------------
+  tcn:
+    num_channels: [32, 64, 128]
+    kernel_size: 3
+    dropout: 0.2
+
+  # -------------------------
+  # 模型3: tcn_lstm_attention
+  # -------------------------
+  tcn_lstm_attention:
+    tcn_num_channels: [30, 60]
+    tcn_kernel_size: 3
+    tcn_dropout: 0.25
+    lstm_hidden_size: 128
+    lstm_num_layers: 2
+    lstm_dropout: 0.3
